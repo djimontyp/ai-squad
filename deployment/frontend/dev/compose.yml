@@ -1,0 +1,27 @@
+services:
+  frontend:
+    build:
+      context: ../../../ui
+      dockerfile: ../deployment/frontend/Dockerfile
+      target: development
+    develop:
+      watch:
+        - action: sync
+          path: ../../../ui
+          target: /app
+          ignore:
+            - node_modules/
+            - dist/
+            - .git/
+        - action: rebuild
+          path: ../../../ui/package.json
+        - action: rebuild
+          path: ../../../ui/package-lock.json
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../../../ui:/app
+      - /app/node_modules
+    env_file:
+      - ../../../.env
+    restart: unless-stopped
